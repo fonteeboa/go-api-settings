@@ -6,10 +6,10 @@ import (
 )
 
 type ApiSystemRepository struct {
-    db *ksql.DB
+    db ksql.DB
 }
 
-func NewApiSystemRepository(db *ksql.DB) *ApiSystemRepository {
+func NewApiSystemRepository(db ksql.DB) *ApiSystemRepository {
     return &ApiSystemRepository{db: db}
 }
 

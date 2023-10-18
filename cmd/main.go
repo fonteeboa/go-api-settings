@@ -8,7 +8,6 @@ import (
     "github.com/joho/godotenv"
     "github.com/gin-gonic/gin"
     "golang-api-settings/internal/infra/http/routes"
-	//"golang-api-settings/internal/domain/settings"
 )
 
 func main() {
@@ -24,7 +23,7 @@ func main() {
     // Passe o roteador para a função de configuração de rotas no pacote "routes"
     routes.ConfigureRoutes(r)
 
-    err := r.Run(fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT")));
+    err := r.Run(fmt.Sprintf("%s:%s", os.Getenv("GO_HOST"), os.Getenv("GO_PORT")));
 
     if err != nil {
         log.Fatal(err)

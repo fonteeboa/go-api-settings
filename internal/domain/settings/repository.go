@@ -6,10 +6,10 @@ import (
 )
 
 type SettingsRepository struct {
-    db *ksql.DB
+    db ksql.DB
 }
 
-func NewSettingsRepository(db *ksql.DB) *SettingsRepository {
+func NewSettingsRepository(db ksql.DB) *SettingsRepository {
     return &SettingsRepository{db: db}
 }
 
