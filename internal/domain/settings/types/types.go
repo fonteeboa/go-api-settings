@@ -1,6 +1,6 @@
-package apiSystem
+package types
 
-type ApiSystem struct {
+type Settings struct {
     ID        int    `json:"ID"` 
     Name      string `json:"name"`
     Value     string `json:"email"`

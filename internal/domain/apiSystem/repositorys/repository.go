@@ -1,26 +1,26 @@
-package settings
+package repositorys
 
 import (
     "github.com/vingarcia/ksql"
     "context"
+    "golang-api-settings/internal/domain/apiSystem/types"
 )
 
-type SettingsRepository struct {
+type ApiSystemRepository struct {
     db ksql.DB
 }
 
-func NewSettingsRepository(db ksql.DB) *SettingsRepository {
-    return &SettingsRepository{db: db}
+func NewApiSystemRepository(db ksql.DB) *ApiSystemRepository {
+    return &ApiSystemRepository{db: db}
 }
 
 
-
-func (r *SettingsRepository) Get(filter Settings) (settings []*Settings, err error) {
+func (r *ApiSystemRepository) Get(filter types.ApiSystem) (settings []*types.ApiSystem, err error) {
     // Crie um contexto
     ctx := context.Background()
 
     // Construir a consulta SQL base
-    query := "SELECT * FROM apiSettings WHERE 1 = 1"
+    query := "SELECT * FROM apiSystem WHERE 1 = 1"
     args := []interface{}{}
 
     // Verificar se um filtro foi fornecido e adicionar condições à consulta
