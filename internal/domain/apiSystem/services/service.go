@@ -3,19 +3,21 @@ package apiSystem
 import (
     "github.com/gin-gonic/gin"
     "net/http"
+    "golang-api-settings/internal/domain/apiSystem/types"
+    "golang-api-settings/internal/domain/apiSystem/repositorys"
 )
 
 type ApiSystemService struct {
-    repository *ApiSystemRepository
+    repository *repositorys.ApiSystemRepository
 }
 
-func NewApiSytemService(repo *ApiSystemRepository) *ApiSystemService {
+func NewApiSytemService(repo *repositorys.ApiSystemRepository) *ApiSystemService {
     return &ApiSystemService{repository: repo}
 }
 
 func (s *ApiSystemService) GetDataService(ctx *gin.Context) {
 
-    var filter ApiSystem
+    var filter types.ApiSystem
     if err := ctx.BindJSON(&filter); err != nil {
         ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return

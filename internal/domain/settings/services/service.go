@@ -3,19 +3,22 @@ package settings
 import (
     "github.com/gin-gonic/gin"
     "net/http"
+    "golang-api-settings/internal/domain/settings/types"
+    "golang-api-settings/internal/domain/settings/repositorys"
 )
 
+
 type SettingsService struct {
-    repository *SettingsRepository
+    repository *repositorys.SettingsRepository
 }
 
-func NewSettingsService(repo *SettingsRepository) *SettingsService {
+func NewSettingsService(repo *repositorys.SettingsRepository) *SettingsService {
     return &SettingsService{repository: repo}
 }
 
 func (s *SettingsService) GetDataService(ctx *gin.Context) {
 
-    var filter Settings
+    var filter types.Settings
     if err := ctx.BindJSON(&filter); err != nil {
         ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return

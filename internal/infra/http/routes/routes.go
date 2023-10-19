@@ -4,8 +4,10 @@ import (
     "github.com/gin-gonic/gin"
     "net/http"
     "time"
-    "golang-api-settings/internal/domain/settings"
-    "golang-api-settings/internal/domain/apiSystem"
+    "golang-api-settings/internal/domain/settings/Services"
+    repositorysSettings "golang-api-settings/internal/domain/settings/repositorys"
+    "golang-api-settings/internal/domain/apiSystem/Services"
+    repositorysApi "golang-api-settings/internal/domain/apiSystem/repositorys"
     "golang-api-settings/internal/infra/database"
     "log"
 )
@@ -20,10 +22,10 @@ func ConfigureRoutes(router *gin.Engine) {
 	}
 
     // Crie instâncias do repositório e do serviço
-    settingsRepo := settings.NewSettingsRepository(db)
+    settingsRepo := repositorysSettings.NewSettingsRepository(db)
     settingsService := settings.NewSettingsService(settingsRepo)
     // Domain apiSystem
-    apiSystemRepo := apiSystem.NewApiSystemRepository(db)
+    apiSystemRepo := repositorysApi.NewApiSystemRepository(db)
 	apiSystemService := apiSystem.NewApiSytemService(apiSystemRepo)
 
 
