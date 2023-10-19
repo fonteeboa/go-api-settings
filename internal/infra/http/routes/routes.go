@@ -4,12 +4,16 @@ import (
     "github.com/gin-gonic/gin"
     "net/http"
     "time"
-    "golang-api-settings/internal/domain/settings/Services"
-    repositorysSettings "golang-api-settings/internal/domain/settings/repositorys"
-    "golang-api-settings/internal/domain/apiSystem/Services"
-    repositorysApi "golang-api-settings/internal/domain/apiSystem/repositorys"
-    "golang-api-settings/internal/infra/database"
     "log"
+    "golang-api-settings/internal/infra/database"
+    // Domain Settings
+    controllerSettings   "golang-api-settings/internal/domain/settings/controller"
+    serviceSettings      "golang-api-settings/internal/domain/settings/services"
+    repositoriesSettings "golang-api-settings/internal/domain/settings/repositories"
+    // Domain apiSystem
+    controllerApi   "golang-api-settings/internal/domain/apiSystem/controller"
+    serviceApi      "golang-api-settings/internal/domain/apiSystem/services"
+    repositoriesApi "golang-api-settings/internal/domain/apiSystem/repositories"
 )
 
 func ConfigureRoutes(router *gin.Engine) {
@@ -22,18 +26,23 @@ func ConfigureRoutes(router *gin.Engine) {
 	}
 
     // Crie instâncias do repositório e do serviço
-    settingsRepo := repositorysSettings.NewSettingsRepository(db)
-    settingsService := settings.NewSettingsService(settingsRepo)
+
+    // Domain Settings
+    settingsRepo := repositoriesSettings.NewSettingsRepository(db)
+    settingsService := serviceSettings.NewSettingsService(settingsRepo)
+    settingsController := controllerSettings.NewSettingsController(settingsService)
+    
     // Domain apiSystem
-    apiSystemRepo := repositorysApi.NewApiSystemRepository(db)
-	apiSystemService := apiSystem.NewApiSytemService(apiSystemRepo)
+    apiSystemRepo := repositoriesApi.NewApiSystemRepository(db)
+    apiSystemService := serviceApi.NewApiSystemService(apiSystemRepo)
+    apiSystemController := controllerApi.NewApiController(apiSystemService)
 
-
+    // Definindo as rotas
     router.GET("/health", func(ctx *gin.Context) {
         ctx.JSON(http.StatusOK, time.Now().String())
     })
 
-    router.GET("/data", settingsService.GetDataService)
+    router.GET("/data", settingsController.GetData)
 
-    router.GET("/api", apiSystemService.GetDataService)    
+    router.GET("/api", apiSystemController.GetData)    
 }

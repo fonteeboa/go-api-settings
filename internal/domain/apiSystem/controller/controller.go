@@ -4,19 +4,18 @@ import (
     "github.com/gin-gonic/gin"
     "net/http"
     "golang-api-settings/internal/domain/apiSystem/types"
-    "golang-api-settings/internal/domain/apiSystem/repositorys"
+    "golang-api-settings/internal/domain/apiSystem/services"
 )
 
-type ApiSystemService struct {
-    repository *repositorys.ApiSystemRepository
+type ApiController struct {
+    service *services.ApiSystemService
 }
 
-func NewApiSytemService(repo *repositorys.ApiSystemRepository) *ApiSystemService {
-    return &ApiSystemService{repository: repo}
+func NewApiController(service *services.ApiSystemService) *ApiController {
+    return &ApiController{service: service}
 }
 
-func (s *ApiSystemService) GetDataService(ctx *gin.Context) {
-
+func (c *ApiController) GetData(ctx *gin.Context) {
     var filter types.ApiSystem
     if err := ctx.BindJSON(&filter); err != nil {
         ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -24,10 +23,10 @@ func (s *ApiSystemService) GetDataService(ctx *gin.Context) {
     }
 
     // Chame o serviço para obter os dados
-    response, err := s.repository.Get(filter)
+    response, err := c.service.GetDataService(filter)
     if err != nil {
         ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return 
+        return
     }
 
     // Retorne os dados da resposta
