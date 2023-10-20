@@ -1,22 +1,19 @@
 package repositorys
 
 import (
-    "github.com/vingarcia/ksql"
-    "context"
-    "golang-api-settings/internal/domain/settings/types"
+    "github.com/jinzhu/gorm"
+    "golang-api-settings/internal/modules/settings/types"
 )
 
 type SettingsRepository struct {
-    db ksql.DB
+    db *gorm.DB
 }
 
-func NewSettingsRepository(db ksql.DB) *SettingsRepository {
+func NewSettingsRepository(db *gorm.DB) *SettingsRepository {
     return &SettingsRepository{db: db}
 }
 
-func (r *SettingsRepository) Get(filter types.Settings) (settings []*types.Settings, err error) {
-    // Crie um contexto
-    ctx := context.Background()
+func (r *SettingsRepository) Get(filter types.Settings) ([]*types.Settings, error) {
 
     // Construir a consulta SQL base
     query := "SELECT * FROM apiSettings WHERE 1 = 1"
@@ -28,9 +25,9 @@ func (r *SettingsRepository) Get(filter types.Settings) (settings []*types.Setti
         args = append(args, "%"+filter.Name+"%")
     }
 
-    if filter.Value != "" {
-        query += " AND value LIKE ?"
-        args = append(args, "%"+filter.Value+"%")
+    if filter.Key != "" {
+        query += " AND Key LIKE ?"
+        args = append(args, "%"+filter.Key+"%")
     }
 
     // Verificar se o filtro do ID foi fornecido
@@ -38,13 +35,13 @@ func (r *SettingsRepository) Get(filter types.Settings) (settings []*types.Setti
         query += " AND id = ?"
         args = append(args, filter.ID)
     }
+
+    var settings []*types.Settings
     
     // Executar a consulta preparada
-    err = r.db.Query(ctx, &settings, query , args)
-
-    if err != nil {
-		return nil, err
-	}
+    if err := r.db.Raw(query, args...).Scan(&settings).Error; err != nil {
+        return nil, err
+    }
 
     return settings, nil
 }

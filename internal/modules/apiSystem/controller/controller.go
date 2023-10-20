@@ -3,20 +3,20 @@ package apiSystem
 import (
     "github.com/gin-gonic/gin"
     "net/http"
-    "golang-api-settings/internal/domain/settings/types"
-    "golang-api-settings/internal/domain/settings/services"
+    "golang-api-settings/internal/modules/apiSystem/types"
+    "golang-api-settings/internal/modules/apiSystem/services"
 )
 
-type settingsController struct {
-    service *services.SettingsService
+type ApiController struct {
+    service *services.ApiSystemService
 }
 
-func NewSettingsController(service *services.SettingsService) *settingsController {
-    return &settingsController{service: service}
+func NewApiController(service *services.ApiSystemService) *ApiController {
+    return &ApiController{service: service}
 }
 
-func (c *settingsController) GetData(ctx *gin.Context) {
-    var filter types.Settings
+func (c *ApiController) GetData(ctx *gin.Context) {
+    var filter types.ApiSystem
     if err := ctx.BindJSON(&filter); err != nil {
         ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return

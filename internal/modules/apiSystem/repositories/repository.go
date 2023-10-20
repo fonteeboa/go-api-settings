@@ -1,23 +1,20 @@
 package repositorys
 
 import (
-    "github.com/vingarcia/ksql"
-    "context"
-    "golang-api-settings/internal/domain/apiSystem/types"
+    "github.com/jinzhu/gorm"
+    "golang-api-settings/internal/modules/apiSystem/types"
 )
 
 type ApiSystemRepository struct {
-    db ksql.DB
+    db *gorm.DB
 }
 
-func NewApiSystemRepository(db ksql.DB) *ApiSystemRepository {
+func NewApiSystemRepository(db *gorm.DB) *ApiSystemRepository {
     return &ApiSystemRepository{db: db}
 }
 
 
 func (r *ApiSystemRepository) Get(filter types.ApiSystem) (settings []*types.ApiSystem, err error) {
-    // Crie um contexto
-    ctx := context.Background()
 
     // Construir a consulta SQL base
     query := "SELECT * FROM apiSystem WHERE 1 = 1"
@@ -29,9 +26,9 @@ func (r *ApiSystemRepository) Get(filter types.ApiSystem) (settings []*types.Api
         args = append(args, "%"+filter.Name+"%")
     }
 
-    if filter.Value != "" {
-        query += " AND value LIKE ?"
-        args = append(args, "%"+filter.Value+"%")
+    if filter.ApiName != "" {
+        query += " AND apiName LIKE ?"
+        args = append(args, "%"+filter.ApiName+"%")
     }
 
     // Verificar se o filtro do ID foi fornecido
@@ -41,11 +38,9 @@ func (r *ApiSystemRepository) Get(filter types.ApiSystem) (settings []*types.Api
     }
     
     // Executar a consulta preparada
-    err = r.db.Query(ctx, &settings, query , args)
-
-    if err != nil {
-		return nil, err
-	}
+    if err := r.db.Raw(query, args...).Scan(&settings).Error; err != nil {
+        return nil, err
+    }
 
     return settings, nil
 }

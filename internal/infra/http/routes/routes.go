@@ -6,14 +6,14 @@ import (
     "time"
     "log"
     "golang-api-settings/internal/infra/database"
-    // Domain Settings
-    controllerSettings   "golang-api-settings/internal/domain/settings/controller"
-    serviceSettings      "golang-api-settings/internal/domain/settings/services"
-    repositoriesSettings "golang-api-settings/internal/domain/settings/repositories"
-    // Domain apiSystem
-    controllerApi   "golang-api-settings/internal/domain/apiSystem/controller"
-    serviceApi      "golang-api-settings/internal/domain/apiSystem/services"
-    repositoriesApi "golang-api-settings/internal/domain/apiSystem/repositories"
+    // modules Settings
+    controllerSettings   "golang-api-settings/internal/modules/settings/controller"
+    serviceSettings      "golang-api-settings/internal/modules/settings/services"
+    repositoriesSettings "golang-api-settings/internal/modules/settings/repositories"
+    // modules apiSystem
+    controllerApi   "golang-api-settings/internal/modules/apiSystem/controller"
+    serviceApi      "golang-api-settings/internal/modules/apiSystem/services"
+    repositoriesApi "golang-api-settings/internal/modules/apiSystem/repositories"
 )
 
 func ConfigureRoutes(router *gin.Engine) {
@@ -27,12 +27,12 @@ func ConfigureRoutes(router *gin.Engine) {
 
     // Crie instâncias do repositório e do serviço
 
-    // Domain Settings
+    // modules Settings
     settingsRepo := repositoriesSettings.NewSettingsRepository(db)
     settingsService := serviceSettings.NewSettingsService(settingsRepo)
     settingsController := controllerSettings.NewSettingsController(settingsService)
     
-    // Domain apiSystem
+    // modules apiSystem
     apiSystemRepo := repositoriesApi.NewApiSystemRepository(db)
     apiSystemService := serviceApi.NewApiSystemService(apiSystemRepo)
     apiSystemController := controllerApi.NewApiController(apiSystemService)
@@ -44,5 +44,5 @@ func ConfigureRoutes(router *gin.Engine) {
 
     router.GET("/data", settingsController.GetData)
 
-    router.GET("/api", apiSystemController.GetData)    
+    router.GET("/api", apiSystemController.GetData)
 }

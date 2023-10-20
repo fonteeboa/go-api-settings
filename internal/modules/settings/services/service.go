@@ -1,8 +1,8 @@
 package services
 
 import (
-    "golang-api-settings/internal/domain/settings/types"
-    "golang-api-settings/internal/domain/settings/repositories"
+    "golang-api-settings/internal/modules/settings/types"
+    "golang-api-settings/internal/modules/settings/repositories"
 )
 
 
