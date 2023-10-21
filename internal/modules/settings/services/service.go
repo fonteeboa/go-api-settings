@@ -1,7 +1,7 @@
 package services
 
 import (
-    "golang-api-settings/internal/modules/settings/types"
+    "golang-api-settings/internal/modules/settings/domain"
     "golang-api-settings/internal/modules/settings/repositories"
 )
 
@@ -14,6 +14,6 @@ func NewSettingsService(repo *repositories.SettingsRepository) *SettingsService 
     return &SettingsService{repositories: repo}
 }
 
-func (s *SettingsService) GetDataService(filter types.Settings) ([]*types.Settings, error) {
-    return s.repositories.Get(filter)
+func (s *SettingsService) GetDataService(filter domain.Settings) ([]*domain.Settings, error) {
+    return s.repositories.GetData(filter)
 }

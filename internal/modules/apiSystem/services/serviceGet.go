@@ -1,7 +1,7 @@
 package services
 
 import (
-    "golang-api-settings/internal/modules/apiSystem/types"
+    types "golang-api-settings/internal/modules/apiSystem/domain"
     "golang-api-settings/internal/modules/apiSystem/repositories"
 )
 
@@ -17,5 +17,5 @@ func NewApiSystemService(repo *repositories.ApiSystemRepository) *ApiSystemServi
 }
 
 func (s *ApiSystemService) GetDataService(filter types.ApiSystem) ([]*types.ApiSystem, error) {
-    return s.repositories.Get(filter)
+    return s.repositories.GetData(filter)
 }

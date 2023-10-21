@@ -3,7 +3,7 @@ package apiSystem
 import (
     "github.com/gin-gonic/gin"
     "net/http"
-    "golang-api-settings/internal/modules/settings/types"
+    types "golang-api-settings/internal/modules/settings/domain"
     "golang-api-settings/internal/modules/settings/services"
 )
 

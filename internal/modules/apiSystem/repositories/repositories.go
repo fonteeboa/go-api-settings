@@ -1,8 +1,8 @@
 package repositories
 
 import (
-    "gorm.io/gorm"
-    "golang-api-settings/internal/modules/apiSystem/types"
+    "github.com/jinzhu/gorm"
+    types "golang-api-settings/internal/modules/apiSystem/domain"
 )
 
 type ApiSystemRepository struct {
@@ -49,8 +49,8 @@ func (r *ApiSystemRepository) Update(apiSystem *types.ApiSystem) error {
 //
 // The filter parameter is an instance of the types.ApiSystem struct, which is used to filter the data.
 // The function returns a slice of types.ApiSystem and an error.
-func (r *ApiSystemRepository) GetData(filter types.ApiSystem) ([]types.ApiSystem, error) {
-    var apiSystem []types.ApiSystem
+func (r *ApiSystemRepository) GetData(filter types.ApiSystem) ([]*types.ApiSystem, error) {
+    var apiSystem []*types.ApiSystem
     query := r.db.Model(&types.ApiSystem{})
 
     if filter.Name != "" {
