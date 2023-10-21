@@ -7,13 +7,13 @@ import (
 
 
 type SettingsService struct {
-    repository *repositorys.SettingsRepository
+    repositories *repositories.SettingsRepository
 }
 
-func NewSettingsService(repo *repositorys.SettingsRepository) *SettingsService {
-    return &SettingsService{repository: repo}
+func NewSettingsService(repo *repositories.SettingsRepository) *SettingsService {
+    return &SettingsService{repositories: repo}
 }
 
 func (s *SettingsService) GetDataService(filter types.Settings) ([]*types.Settings, error) {
-    return s.repository.Get(filter)
+    return s.repositories.Get(filter)
 }

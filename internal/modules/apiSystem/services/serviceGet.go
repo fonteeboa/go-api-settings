@@ -6,16 +6,16 @@ import (
 )
 
 type ApiSystemService struct {
-    repository *repositorys.ApiSystemRepository
+    repositories *repositories.ApiSystemRepository
 }
 
 // NewApiSystemService creates a new instance of the ApiSystemService.
 //
-// It takes a *repositorys.ApiSystemRepository as a parameter and returns a *ApiSystemService.
-func NewApiSystemService(repo *repositorys.ApiSystemRepository) *ApiSystemService {
-    return &ApiSystemService{repository: repo}
+// It takes a *repositories.ApiSystemRepository as a parameter and returns a *ApiSystemService.
+func NewApiSystemService(repo *repositories.ApiSystemRepository) *ApiSystemService {
+    return &ApiSystemService{repositories: repo}
 }
 
 func (s *ApiSystemService) GetDataService(filter types.ApiSystem) ([]*types.ApiSystem, error) {
-    return s.repository.Get(filter)
+    return s.repositories.Get(filter)
 }
