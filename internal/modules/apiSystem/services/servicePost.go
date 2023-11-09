@@ -15,7 +15,13 @@ func (s *ApiSystemService) InsertData(data *types.ApiSystem) (string, error) {
         return "common.duplicated", nil
     }
 
-    if err := s.repositories.Create(data); err != nil {
+    if data.ID == 0 {
+        err = s.repositories.Create(data);
+    } else {
+        err = s.repositories.Update(data);
+    }
+
+    if err != nil {
         return "", err
     }
 

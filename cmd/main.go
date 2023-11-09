@@ -3,6 +3,7 @@ package main
 import (
     "log"
     "os"
+    "fmt"
 	"time"
     "github.com/joho/godotenv"
     "github.com/gin-gonic/gin"

@@ -32,3 +32,41 @@ func (c *ApiController) GetData(ctx *gin.Context) {
     // Retorne os dados da resposta
     ctx.JSON(http.StatusOK, response)
 }
+
+
+func (c *ApiController) Delete(ctx *gin.Context) {
+    var filter types.ApiSystem
+    if err := ctx.BindJSON(&filter); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    // Chame o serviço para obter os dados
+    err := c.service.Delete(filter)
+    if err != nil {
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    // Retorne os dados da resposta
+    ctx.JSON(http.StatusOK, 1)
+}
+
+
+func (c *ApiController) InsertData(ctx *gin.Context) {
+    var filter *types.ApiSystem
+    if err := ctx.BindJSON(&filter); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    // Chame o serviço para obter os dados
+    response, err := c.service.InsertData(filter)
+    if err != nil {
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    // Retorne os dados da resposta
+    ctx.JSON(http.StatusOK, response)
+}

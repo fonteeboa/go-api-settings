@@ -44,5 +44,9 @@ func ConfigureRoutes(router *gin.Engine) {
 
     router.GET("/data", settingsController.GetData)
 
+    // modules apiSystem
     router.GET("/api", apiSystemController.GetData)
+    router.DELETE("/api", apiSystemController.Delete)
+    router.POST("/api", apiSystemController.InsertData)
+
 }
