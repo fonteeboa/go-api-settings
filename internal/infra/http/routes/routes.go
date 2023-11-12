@@ -1,52 +1,66 @@
 package routes
 
 import (
-    "github.com/gin-gonic/gin"
-    "net/http"
-    "time"
-    "log"
-    "golang-api-settings/internal/infra/database"
-    // modules Settings
-    controllerSettings   "golang-api-settings/internal/modules/settings/controller"
-    serviceSettings      "golang-api-settings/internal/modules/settings/services"
-    repositoriesSettings "golang-api-settings/internal/modules/settings/repositories"
-    // modules apiSystem
-    controllerApi   "golang-api-settings/internal/modules/apiSystem/controller"
-    serviceApi      "golang-api-settings/internal/modules/apiSystem/services"
-    repositoriesApi "golang-api-settings/internal/modules/apiSystem/repositories"
+	"golang-api-settings/internal/infra/database"
+	"log"
+	"net/http"
+	"time"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+
+	// modules Settings
+	controllerSettings "golang-api-settings/internal/modules/settings/controller"
+	repositoriesSettings "golang-api-settings/internal/modules/settings/repositories"
+	serviceSettings "golang-api-settings/internal/modules/settings/services"
+
+	// modules apiSystem
+	controllerApi "golang-api-settings/internal/modules/apiSystem/controller"
+	repositoriesApi "golang-api-settings/internal/modules/apiSystem/repositories"
+	serviceApi "golang-api-settings/internal/modules/apiSystem/services"
 )
 
 func ConfigureRoutes(router *gin.Engine) {
 
-    gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 	db, errDb := database.NewConnect()
 
 	if errDb != nil {
 		log.Fatal(errDb)
 	}
 
-    // Crie instâncias do repositório e do serviço
+	// Configurar o middleware CORS
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"*"} // Substitua pelo seu frontend URL
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
+	router.Use(cors.New(config))
 
-    // modules Settings
-    settingsRepo := repositoriesSettings.NewSettingsRepository(db)
-    settingsService := serviceSettings.NewSettingsService(settingsRepo)
-    settingsController := controllerSettings.NewSettingsController(settingsService)
-    
-    // modules apiSystem
-    apiSystemRepo := repositoriesApi.NewApiSystemRepository(db)
-    apiSystemService := serviceApi.NewApiSystemService(apiSystemRepo)
-    apiSystemController := controllerApi.NewApiController(apiSystemService)
+	// Crie instâncias do repositório e do serviço
 
-    // Definindo as rotas
-    router.GET("/health", func(ctx *gin.Context) {
-        ctx.JSON(http.StatusOK, time.Now().String())
-    })
+	// modules Settings
+	settingsRepo := repositoriesSettings.NewSettingsRepository(db)
+	settingsService := serviceSettings.NewSettingsService(settingsRepo)
+	settingsController := controllerSettings.NewSettingsController(settingsService)
 
-    router.GET("/data", settingsController.GetData)
+	// modules apiSystem
+	apiSystemRepo := repositoriesApi.NewApiSystemRepository(db)
+	apiSystemService := serviceApi.NewApiSystemService(apiSystemRepo)
+	apiSystemController := controllerApi.NewApiController(apiSystemService)
 
-    // modules apiSystem
-    router.GET("/api", apiSystemController.GetData)
-    router.DELETE("/api", apiSystemController.Delete)
-    router.POST("/api", apiSystemController.InsertData)
+	// Definindo as rotas
+	router.GET("/health", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, time.Now().String())
+	})
+
+	// modules Settings
+	router.GET("/auth", settingsController.GetData)
+	router.POST("/auth", settingsController.InsertData)
+	router.PUT("/auth", settingsController.UpdateData)
+
+	// modules apiSystem
+	router.GET("/itg", apiSystemController.GetData)
+	router.DELETE("/itg", apiSystemController.Delete)
+	router.POST("/itg", apiSystemController.InsertData)
+	router.PUT("/itg", apiSystemController.UpdateData)
 
 }

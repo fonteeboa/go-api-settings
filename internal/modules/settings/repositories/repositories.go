@@ -1,18 +1,20 @@
 package repositories
 
 import (
-    "github.com/jinzhu/gorm"
-    "golang-api-settings/internal/modules/settings/domain"
+	"golang-api-settings/internal/modules/settings/domain"
+
+	"github.com/jinzhu/gorm"
 )
+
 type SettingsRepository struct {
-    db *gorm.DB
+	db *gorm.DB
 }
 
 // NewSettingsRepository creates a new instance of the SettingsRepository struct.
 //
 // It takes a *gorm.DB parameter named db and returns a *SettingsRepository.
 func NewSettingsRepository(db *gorm.DB) *SettingsRepository {
-    return &SettingsRepository{db: db}
+	return &SettingsRepository{db: db}
 }
 
 // CreateSettings creates a new setting in the database.
@@ -21,9 +23,8 @@ func NewSettingsRepository(db *gorm.DB) *SettingsRepository {
 // setting: the setting to be created.
 // error: an error if the operation fails.
 func (r *SettingsRepository) CreateSettings(setting *domain.Settings) error {
-    return r.db.Create(setting).Error
+	return r.db.Create(setting).Error
 }
-
 
 // DeleteSettingsByID deletes a Settings record from the database by its ID.
 //
@@ -34,18 +35,16 @@ func (r *SettingsRepository) CreateSettings(setting *domain.Settings) error {
 // Returns:
 // - An error if there was an issue deleting the record from the database.
 func (r *SettingsRepository) DeleteSettingsByID(id uint) error {
-    return r.db.Where("id = ?", id).Delete(&domain.Settings{}).Error
+	return r.db.Where("id = ?", id).Delete(&domain.Settings{}).Error
 }
-
 
 // UpdateSettings updates the settings in the database.
 //
 // It takes a *gorm.DB object and a *Settings object as parameters.
 // It returns an error.
 func (r *SettingsRepository) UpdateSettings(setting *domain.Settings) error {
-    return r.db.Save(setting).Error
+	return r.db.Save(setting).Error
 }
-
 
 // GetData retrieves a list of settings based on the provided filter.
 //
@@ -55,42 +54,42 @@ func (r *SettingsRepository) UpdateSettings(setting *domain.Settings) error {
 // It returns a slice of Settings and an error. The slice contains the retrieved settings that match the filter,
 // and the error indicates if any error occurred during the retrieval process.
 func (r *SettingsRepository) GetData(filter domain.Settings) ([]*domain.Settings, error) {
-    var settings []*domain.Settings
-    query := r.db
+	var settings []*domain.Settings
+	query := r.db
 
-    if filter.ApiKey != "" {
-        query = query.Where("api_key LIKE ?", "%"+filter.ApiKey+"%")
-    }
-    if filter.ApiId != 0 {
-        query = query.Where("api_id = ?", filter.ApiId)
-    }
+	if filter.Name != "" {
+		query = query.Where("name LIKE ?", "%"+filter.Name+"%")
+	}
+	if filter.ID != 0 {
+		query = query.Where("api_id = ?", filter.ID)
+	}
 
-    if err := query.Find(&settings).Error; err != nil {
-        return nil, err
-    }
+	if err := query.Find(&settings).Error; err != nil {
+		return nil, err
+	}
 
-    return settings, nil
+	return settings, nil
 }
-
 
 // GetDataWithJoin retrieves a list of Settings from the database based on the provided filter.
 //
 // It takes in a *gorm.DB object representing the database connection and a Settings object representing the filter.
 // The function returns a slice of Settings and an error object.
 func (r *SettingsRepository) GetDataWithJoin(filter domain.Settings) ([]*domain.Settings, error) {
-    var settings []*domain.Settings
-    query := r.db.Preload("ApiSystem")
+	var settings []*domain.Settings
+	query := r.db.Preload("Settings")
 
-    if filter.ApiKey != "" {
-        query = query.Where("api_key LIKE ?", "%"+filter.ApiKey+"%")
-    }
-    if filter.ApiId != 0 {
-        query = query.Where("api_id = ?", filter.ApiId)
-    }
+	if filter.Name != "" {
+		query = query.Where("api_key LIKE ?", "%"+filter.Name+"%")
+	}
 
-    if err := query.Find(&settings).Error; err != nil {
-        return nil, err
-    }
+	if filter.ID != 0 {
+		query = query.Where("api_id = ?", filter.ID)
+	}
 
-    return settings, nil
+	if err := query.Find(&settings).Error; err != nil {
+		return nil, err
+	}
+
+	return settings, nil
 }

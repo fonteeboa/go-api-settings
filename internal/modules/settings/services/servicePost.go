@@ -1,12 +1,12 @@
 package services
 
 import (
-	types "golang-api-settings/internal/modules/apiSystem/domain"
+	types "golang-api-settings/internal/modules/settings/domain"
 )
 
-func (s *ApiSystemService) InsertData(data *types.ApiSystem) (string, error) {
+func (s *SettingsService) InsertData(data *types.Settings) (string, error) {
 	// Verifique se já existe um registro com as mesmas informações (verifique duplicatas)
-	existingData, err := s.repositories.GetData(types.ApiSystem{Name: data.Name})
+	existingData, err := s.repositories.GetData(types.Settings{Name: data.Name})
 	if err != nil {
 		return "", err
 	}
@@ -15,7 +15,7 @@ func (s *ApiSystemService) InsertData(data *types.ApiSystem) (string, error) {
 		return "common.duplicated", nil
 	}
 
-	err = s.repositories.Create(data)
+	err = s.repositories.CreateSettings(data)
 	if err != nil {
 		return "", err
 	}

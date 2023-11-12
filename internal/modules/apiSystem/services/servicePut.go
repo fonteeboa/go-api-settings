@@ -4,7 +4,7 @@ import (
 	types "golang-api-settings/internal/modules/apiSystem/domain"
 )
 
-func (s *ApiSystemService) InsertData(data *types.ApiSystem) (string, error) {
+func (s *ApiSystemService) UpdateData(data *types.ApiSystem) (string, error) {
 	// Verifique se já existe um registro com as mesmas informações (verifique duplicatas)
 	existingData, err := s.repositories.GetData(types.ApiSystem{Name: data.Name})
 	if err != nil {
@@ -15,7 +15,7 @@ func (s *ApiSystemService) InsertData(data *types.ApiSystem) (string, error) {
 		return "common.duplicated", nil
 	}
 
-	err = s.repositories.Create(data)
+	err = s.repositories.Update(data)
 	if err != nil {
 		return "", err
 	}
