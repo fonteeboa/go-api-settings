@@ -22,7 +22,6 @@ import (
 
 func ConfigureRoutes(router *gin.Engine) {
 
-	gin.SetMode(gin.ReleaseMode)
 	db, errDb := database.NewConnect()
 
 	if errDb != nil {

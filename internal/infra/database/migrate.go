@@ -2,17 +2,18 @@ package database
 
 import (
 	"fmt"
+	"golang-api-settings/internal/infra/database/initialData"
+	apiSystemModels "golang-api-settings/internal/modules/apiSystem/domain"
+	settingsModels "golang-api-settings/internal/modules/settings/domain"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-    settingsModels "golang-api-settings/internal/modules/settings/domain"
-    apiSystemModels "golang-api-settings/internal/modules/apiSystem/domain"
-
 )
 
 func MigrateAllModels(db *gorm.DB) {
 	models := []interface{}{ // Adicione todos os modelos aqui
-        &apiSystemModels.ApiSystem{},
-        &settingsModels.Settings{},
+		&apiSystemModels.ApiSystem{},
+		&settingsModels.Settings{},
 		// Adicione todos os seus modelos
 	}
 
@@ -23,4 +24,7 @@ func MigrateAllModels(db *gorm.DB) {
 			fmt.Printf("Modelo %T migrado com sucesso.\n", model)
 		}
 	}
+
+	// Inserir dados iniciais para a tabela Settings
+	initialData.InsertBaseData(db)
 }
