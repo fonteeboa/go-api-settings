@@ -1,10 +1,9 @@
-package initialData
+package database
 
 import (
 	"fmt"
+	databaseDomain "golang-api-settings/internal/infra/database/exportDomain"
 	"strings"
-
-	"github.com/jinzhu/gorm"
 )
 
 // InitialData é uma interface para dados iniciais genéricos
@@ -13,7 +12,7 @@ type InitialData interface{}
 var InitialDataMap = make(map[string][]InitialData)
 
 // InsertBaseData insere dados iniciais para todos os modelos registrados
-func InsertBaseData(db *gorm.DB) {
+func InsertBaseData(db DBHandler) {
 	fmt.Println("Função de inserção de dados iniciais em execução.")
 	AddSettingsInitialData()
 	for modelName := range InitialDataMap {
@@ -25,7 +24,7 @@ func InsertBaseData(db *gorm.DB) {
 }
 
 // InsertDataForModel insere dados iniciais para um modelo específico
-func InsertDataForModel(db *gorm.DB, modelName string) {
+func InsertDataForModel(db DBHandler, modelName string) {
 	data, ok := InitialDataMap[modelName]
 	if !ok {
 		fmt.Printf("Não há dados iniciais para o modelo %s.\n", modelName)
@@ -39,7 +38,7 @@ func InsertDataForModel(db *gorm.DB, modelName string) {
 		db.Table(modelNameLowerCaseString).Where(eachRow).Count(&count)
 
 		if count == 0 {
-			if err := db.Create(eachRow).Error; err != nil {
+			if err := db.Create(eachRow); err != nil {
 				fmt.Printf("Erro ao inserir dados iniciais para o modelo %s: %v\n", modelName, err)
 			} else {
 				fmt.Printf("Dados iniciais para o modelo %s inseridos com sucesso.\n", modelName)
@@ -54,4 +53,11 @@ func InsertDataForModel(db *gorm.DB, modelName string) {
 // AddInitialData adiciona dados iniciais para um modelo específico
 func AddInitialData(modelName string, data InitialData) {
 	InitialDataMap[modelName] = append(InitialDataMap[modelName], data)
+}
+func MergeConstraints(arrays ...[]databaseDomain.ForeignKeyConfig) []databaseDomain.ForeignKeyConfig {
+	var result []databaseDomain.ForeignKeyConfig
+	for _, array := range arrays {
+		result = append(result, array...)
+	}
+	return result
 }
