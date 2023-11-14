@@ -6,12 +6,12 @@ import (
 
 func (s *ApiSystemService) UpdateData(data *types.ApiSystem) (string, error) {
 	// Verifique se já existe um registro com as mesmas informações (verifique duplicatas)
-	existingData, err := s.repositories.GetData(types.ApiSystem{Name: data.Name})
+	existingData, err := s.repositories.GetData(types.ApiSystem{ApiID: data.ApiID})
 	if err != nil {
 		return "", err
 	}
 
-	if len(existingData) > 0 {
+	if len(existingData) > 0 && existingData[0].ID != data.ID {
 		return "common.duplicated", nil
 	}
 

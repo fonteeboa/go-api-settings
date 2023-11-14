@@ -5,10 +5,11 @@ import (
 	"os"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres" // Importe o driver do PostgreSQL para o GORM
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
-func NewConnect() (*gorm.DB, error) {
+// NewConnect retorna uma instância de DBHandler, que é uma interface para manipular o banco de dados.
+func NewConnect() (DBHandler, error) {
 	// Leitura das variáveis de ambiente do arquivo .env
 	host := os.Getenv("POSTGRES_HOST")
 	port := os.Getenv("POSTGRES_EXTERNAL_PORT")
@@ -24,17 +25,15 @@ func NewConnect() (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
 	// Conecte ao banco de dados usando o GORM
-	db, err := gorm.Open("postgres", dsn)
+	gormDB, err := gorm.Open("postgres", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("unable to connect to database: %v", err)
 	}
 	fmt.Println("Connected to the database")
 
-	// Defina o modo verbose para o GORM, se necessário
-	// db.LogMode(true)
-
 	// Realiza a migração dos modelos de tabelas
-	MigrateAllModels(db)
+	MigrateAllModels(&GormDBHandler{DB: gormDB})
 
-	return db, nil
+	// Retorna uma instância de GormDBHandler que implementa a interface DBHandler
+	return &GormDBHandler{DB: gormDB}, nil
 }

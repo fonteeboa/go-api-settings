@@ -1,19 +1,21 @@
 package repositories
 
 import (
+	"golang-api-settings/internal/infra/database"
+	databaseDomain "golang-api-settings/internal/infra/database/exportDomain"
 	"golang-api-settings/internal/modules/settings/domain"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type SettingsRepository struct {
-	db *gorm.DB
+	db database.DBHandler
 }
 
 // NewSettingsRepository creates a new instance of the SettingsRepository struct.
 //
 // It takes a *gorm.DB parameter named db and returns a *SettingsRepository.
-func NewSettingsRepository(db *gorm.DB) *SettingsRepository {
+func NewSettingsRepository(db database.DBHandler) *SettingsRepository {
 	return &SettingsRepository{db: db}
 }
 
@@ -23,7 +25,7 @@ func NewSettingsRepository(db *gorm.DB) *SettingsRepository {
 // setting: the setting to be created.
 // error: an error if the operation fails.
 func (r *SettingsRepository) CreateSettings(setting *domain.Settings) error {
-	return r.db.Create(setting).Error
+	return r.db.Create(setting)
 }
 
 // DeleteSettingsByID deletes a Settings record from the database by its ID.
@@ -35,7 +37,16 @@ func (r *SettingsRepository) CreateSettings(setting *domain.Settings) error {
 // Returns:
 // - An error if there was an issue deleting the record from the database.
 func (r *SettingsRepository) DeleteSettingsByID(id uint) error {
-	return r.db.Where("id = ?", id).Delete(&domain.Settings{}).Error
+	// Crie uma instância do modelo com o campo ID especificado
+	settingsToDelete := domain.Settings{Model: gorm.Model{ID: id}}
+	// Use a função Delete para excluir o registro
+	if err := r.db.Delete(&settingsToDelete); err != nil {
+		// Se ocorrer um erro durante a exclusão, retorne o erro
+		return err
+	}
+
+	// Operação de exclusão bem-sucedida
+	return nil
 }
 
 // UpdateSettings updates the settings in the database.
@@ -43,7 +54,7 @@ func (r *SettingsRepository) DeleteSettingsByID(id uint) error {
 // It takes a *gorm.DB object and a *Settings object as parameters.
 // It returns an error.
 func (r *SettingsRepository) UpdateSettings(setting *domain.Settings) error {
-	return r.db.Save(setting).Error
+	return r.db.Save(setting)
 }
 
 // GetData retrieves a list of settings based on the provided filter.
@@ -55,39 +66,31 @@ func (r *SettingsRepository) UpdateSettings(setting *domain.Settings) error {
 // and the error indicates if any error occurred during the retrieval process.
 func (r *SettingsRepository) GetData(filter domain.Settings) ([]*domain.Settings, error) {
 	var settings []*domain.Settings
-	query := r.db
+	filters := []databaseDomain.Filter{}
 
+	// Adicionar filtros específicos
 	if filter.Name != "" {
-		query = query.Where("name LIKE ?", "%"+filter.Name+"%")
-	}
-	if filter.ID != 0 {
-		query = query.Where("api_id = ?", filter.ID)
-	}
-
-	if err := query.Find(&settings).Error; err != nil {
-		return nil, err
-	}
-
-	return settings, nil
-}
-
-// GetDataWithJoin retrieves a list of Settings from the database based on the provided filter.
-//
-// It takes in a *gorm.DB object representing the database connection and a Settings object representing the filter.
-// The function returns a slice of Settings and an error object.
-func (r *SettingsRepository) GetDataWithJoin(filter domain.Settings) ([]*domain.Settings, error) {
-	var settings []*domain.Settings
-	query := r.db.Preload("Settings")
-
-	if filter.Name != "" {
-		query = query.Where("api_key LIKE ?", "%"+filter.Name+"%")
+		filters = append(filters, databaseDomain.Filter{Field: "name", Operator: "like", Value: "%" + filter.Name + "%"})
 	}
 
 	if filter.ID != 0 {
-		query = query.Where("api_id = ?", filter.ID)
+		filters = append(filters, databaseDomain.Filter{Field: "id", Operator: "eq", Value: filter.ID})
 	}
 
-	if err := query.Find(&settings).Error; err != nil {
+	// Criar parâmetros com base nos filtros
+	params := databaseDomain.QueryParams{
+		Filters: filters,
+		// Pode adicionar Joins aqui se necessário
+	}
+
+	tableName := r.db.GetTableName(&domain.Settings{})
+	query, errQuery := r.db.MountQuery(tableName, params)
+	if errQuery != nil {
+		return nil, errQuery
+	}
+
+	err := query.Find(&settings).Error
+	if err != nil {
 		return nil, err
 	}
 
