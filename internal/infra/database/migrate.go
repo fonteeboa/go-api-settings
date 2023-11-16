@@ -2,16 +2,16 @@ package database
 
 import (
 	"fmt"
-	apiSystemModels "golang-api-settings/internal/modules/apiSystem/domain"
-	settingsModels "golang-api-settings/internal/modules/settings/domain"
+	authorizationModels "golang-api-settings/internal/modules/authorization/domain"
+	integrationModels "golang-api-settings/internal/modules/integration/domain"
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 func MigrateAllModels(db DBHandler) {
 	models := []interface{}{ // Adicione todos os modelos aqui
-		&settingsModels.Settings{},
-		&apiSystemModels.ApiSystem{},
+		&authorizationModels.Authorization{},
+		&integrationModels.Integration{},
 		// Adicione todos os seus modelos
 	}
 
@@ -25,14 +25,12 @@ func MigrateAllModels(db DBHandler) {
 	}
 
 	MigrateCreateConstraints(db)
-
-	// Inserir dados iniciais para a tabela Settings
 	InsertBaseData(db)
 }
 
 func MigrateCreateConstraints(db DBHandler) {
 	allConstraints := MergeConstraints(
-		apiSystemModels.Constraints,
+		integrationModels.Constraints,
 	)
 	err := db.AddForeignKeys(allConstraints)
 	if err != nil {

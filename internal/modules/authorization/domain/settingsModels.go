@@ -4,8 +4,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// Settings é o modelo correspondente à struct Settings.
-type Settings struct {
+// Authorization é o modelo correspondente à struct Authorization.
+type Authorization struct {
 	gorm.Model
 	Name        string `gorm:"type:text"`
 	Description string `gorm:"type:text"`

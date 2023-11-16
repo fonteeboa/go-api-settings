@@ -1,11 +1,11 @@
 package database
 
 import (
-	settingsModels "golang-api-settings/internal/modules/settings/domain"
+	authorizationModels "golang-api-settings/internal/modules/authorization/domain"
 )
 
 func AddSettingsInitialData() {
-	for _, data := range settingsModels.SettingsInitialData {
-		AddInitialData("Settings", data)
+	for _, data := range authorizationModels.AuthorizationInitialData {
+		AddInitialData("authorizations", data)
 	}
 }

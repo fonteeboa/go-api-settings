@@ -6,9 +6,9 @@ import (
 
 var Constraints = []databaseDomain.ForeignKeyConfig{
 	{
-		Model:          &ApiSystem{},
+		Model:          &Integration{},
 		ForeignKeyName: "api_id",
-		References:     "settings(id)",
+		References:     "authorizations(id)",
 		OnUpdate:       "CASCADE",
 		OnDelete:       "SET NULL",
 	},

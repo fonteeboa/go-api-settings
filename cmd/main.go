@@ -3,20 +3,18 @@ package main
 import (
 	"fmt"
 	"golang-api-settings/internal/infra/http/routes"
+	"golang-api-settings/internal/infra/providers"
 	"log"
 	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 func main() {
 
 	// Carregue as variáveis de ambiente a partir do arquivo .env
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Erro ao carregar o arquivo .env")
-	}
+	providers.LoadEnv()
 
 	// Inicialize o roteador principal
 	r := gin.Default()

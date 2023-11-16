@@ -9,15 +9,15 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
-	// modules Settings
-	controllerSettings "golang-api-settings/internal/modules/settings/controller"
-	repositoriesSettings "golang-api-settings/internal/modules/settings/repositories"
-	serviceSettings "golang-api-settings/internal/modules/settings/services"
+	// modules Authorization
+	controllerAuthorization "golang-api-settings/internal/modules/authorization/controller"
+	repositoriesAuthorization "golang-api-settings/internal/modules/authorization/repositories"
+	serviceAuthorization "golang-api-settings/internal/modules/authorization/services"
 
-	// modules apiSystem
-	controllerApi "golang-api-settings/internal/modules/apiSystem/controller"
-	repositoriesApi "golang-api-settings/internal/modules/apiSystem/repositories"
-	serviceApi "golang-api-settings/internal/modules/apiSystem/services"
+	// modules integration
+	controllerApi "golang-api-settings/internal/modules/integration/controller"
+	repositoriesApi "golang-api-settings/internal/modules/integration/repositories"
+	serviceApi "golang-api-settings/internal/modules/integration/services"
 )
 
 func ConfigureRoutes(router *gin.Engine) {
@@ -36,30 +36,30 @@ func ConfigureRoutes(router *gin.Engine) {
 
 	// Crie instâncias do repositório e do serviço
 
-	// modules Settings
-	settingsRepo := repositoriesSettings.NewSettingsRepository(db)
-	settingsService := serviceSettings.NewSettingsService(settingsRepo)
-	settingsController := controllerSettings.NewSettingsController(settingsService)
+	// modules Authorization
+	authorizationRepo := repositoriesAuthorization.NewAuthorizationRepository(db)
+	authorizationService := serviceAuthorization.NewAuthorizationService(authorizationRepo)
+	authorizationController := controllerAuthorization.NewAuthorizationController(authorizationService)
 
-	// modules apiSystem
-	apiSystemRepo := repositoriesApi.NewApiSystemRepository(db)
-	apiSystemService := serviceApi.NewApiSystemService(apiSystemRepo)
-	apiSystemController := controllerApi.NewApiController(apiSystemService)
+	// modules integration
+	integrationRepo := repositoriesApi.NewIntegrationRepository(db)
+	integrationService := serviceApi.NewIntegrationService(integrationRepo)
+	integrationController := controllerApi.NewApiController(integrationService)
 
 	// Definindo as rotas
 	router.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, time.Now().String())
 	})
 
-	// modules Settings
-	router.GET("/auth", settingsController.GetData)
-	router.POST("/auth", settingsController.InsertData)
-	router.PUT("/auth", settingsController.UpdateData)
+	// modules Authorization
+	router.GET("/auth", authorizationController.GetData)
+	router.POST("/auth", authorizationController.InsertData)
+	router.PUT("/auth", authorizationController.UpdateData)
 
-	// modules apiSystem
-	router.GET("/itg", apiSystemController.GetData)
-	router.DELETE("/itg", apiSystemController.Delete)
-	router.POST("/itg", apiSystemController.InsertData)
-	router.PUT("/itg", apiSystemController.UpdateData)
+	// modules integration
+	router.GET("/itg", integrationController.GetData)
+	router.DELETE("/itg", integrationController.Delete)
+	router.POST("/itg", integrationController.InsertData)
+	router.PUT("/itg", integrationController.UpdateData)
 
 }

@@ -1,12 +1,12 @@
 package services
 
 import (
-	types "golang-api-settings/internal/modules/settings/domain"
+	types "golang-api-settings/internal/modules/authorization/domain"
 )
 
-func (s *SettingsService) UpdateData(data *types.Settings) (string, error) {
+func (s *AuthorizationService) UpdateData(data *types.Authorization) (string, error) {
 	// Verifique se já existe um registro com as mesmas informações (verifique duplicatas)
-	existingData, err := s.repositories.GetData(types.Settings{Name: data.Name})
+	existingData, err := s.repositories.GetData(types.Authorization{Name: data.Name})
 	if err != nil {
 		return "", err
 	}
@@ -15,7 +15,7 @@ func (s *SettingsService) UpdateData(data *types.Settings) (string, error) {
 		return "common.duplicated", nil
 	}
 
-	err = s.repositories.UpdateSettings(data)
+	err = s.repositories.UpdateAuthorization(data)
 	if err != nil {
 		return "", err
 	}

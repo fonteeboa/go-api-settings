@@ -1,5 +1,5 @@
 package domain
 
-var SettingsInitialData = []*Settings{
+var AuthorizationInitialData = []*Authorization{
 	{Name: "Fortinite", Description: "Fortinite api"},
 }

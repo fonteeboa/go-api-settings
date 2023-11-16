@@ -2,12 +2,12 @@ package services
 
 import (
 	"fmt"
-	types "golang-api-settings/internal/modules/apiSystem/domain"
+	types "golang-api-settings/internal/modules/integration/domain"
 )
 
-func (s *ApiSystemService) InsertData(data *types.ApiSystem) (string, error) {
+func (s *IntegrationService) InsertData(data *types.Integration) (string, error) {
 	// Verifique se já existe um registro com as mesmas informações (verifique duplicatas)
-	existingData, err := s.repositories.GetData(types.ApiSystem{ApiID: data.ApiID})
+	existingData, err := s.repositories.GetData(types.Integration{ApiID: data.ApiID})
 	if err != nil {
 		return "", err
 	}
