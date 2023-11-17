@@ -64,7 +64,7 @@ func (r *IntegrationRepository) GetData(filter types.Integration) ([]*types.Inte
 	}
 
 	joins := []databaseDomain.Join{}
-	joins = append(joins, databaseDomain.Join{JoinType: "LEFT JOIN", Table: "settings", Condition: "settings.id = api_systems.api_id"})
+	joins = append(joins, databaseDomain.Join{JoinType: "LEFT JOIN", Table: "authorizations", Condition: "authorizations.id = integrations.api_id"})
 
 	// Criar parâmetros com base nos filtros
 	params := databaseDomain.QueryParams{
