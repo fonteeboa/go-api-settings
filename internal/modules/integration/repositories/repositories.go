@@ -81,7 +81,7 @@ func (r *IntegrationRepository) GetData(filter types.Integration) ([]*types.Inte
 		return nil, errQuery
 	}
 
-	err := query.Find(&integration).Error
+	err := query.Preload("Authorization").Find(&integration).Error
 	if err != nil {
 		return nil, err
 	}

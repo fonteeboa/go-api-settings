@@ -59,6 +59,7 @@ func ConfigureRoutes(router *gin.Engine) {
 	// modules integration
 	router.GET("/itg", integrationController.GetData)
 	router.DELETE("/itg", integrationController.Delete)
+	router.DELETE("/itgAll", integrationController.DeleteAll)
 	router.POST("/itg", integrationController.InsertData)
 	router.PUT("/itg", integrationController.UpdateData)
 

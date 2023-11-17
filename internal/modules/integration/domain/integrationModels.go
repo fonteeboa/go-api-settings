@@ -6,10 +6,10 @@ import (
 	"gorm.io/gorm"
 )
 
-// Settings é o modelo correspondente à struct Integration.
+// Integration é o modelo correspondente à struct Integration.
 type Integration struct {
 	gorm.Model
-	ApiKey  string
-	ApiID   int
-	Setting authorizationModels.Authorization
+	ApiKey        string
+	ApiID         int
+	Authorization authorizationModels.Authorization `gorm:"foreignKey:ApiID"`
 }

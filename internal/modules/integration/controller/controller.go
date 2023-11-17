@@ -53,6 +53,28 @@ func (c *ApiController) Delete(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, 1)
 }
 
+func (c *ApiController) DeleteAll(ctx *gin.Context) {
+	var filters []types.Integration
+
+	// Bind do JSON para um slice (array) de types.Integration
+	if err := ctx.BindJSON(&filters); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON data"})
+		return
+	}
+
+	err := c.service.DeleteAll(filters)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Retorne os dados da resposta
+	ctx.JSON(http.StatusOK, 1)
+
+	// Retorna um status OK (200) após a exclusão bem-sucedida
+	ctx.JSON(http.StatusOK, gin.H{"message": "Items deleted successfully"})
+}
+
 func (c *ApiController) InsertData(ctx *gin.Context) {
 	var filter *types.Integration
 
